@@ -1,0 +1,53 @@
+# File: swagger/delete_subscription.yaml
+tags:
+  - name: Subscriptions
+summary: Delete a subscription by ID
+description: Delete a subscription from the database by its ID
+parameters:
+  - name: id
+    in: path
+    required: true
+    description: ID of the subscription to delete
+    schema:
+      type: integer
+responses:
+  200:
+    description: Subscription deleted successfully
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: "Subscription deleted from subscriptions successfully."
+  400:
+    description: Bad request
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Invalid request parameters"
+  404:
+    description: Subscription not found
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: "Subscription not found."
+  500:
+    description: Internal server error
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "An unexpected error occurred"

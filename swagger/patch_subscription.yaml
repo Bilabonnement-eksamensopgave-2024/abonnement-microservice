@@ -1,0 +1,88 @@
+# File: swagger/patch_subscription.yaml
+tags:
+  - name: Subscriptions
+summary: Update an existing subscription
+description: Update an existing subscription in the database
+parameters:
+  - name: id
+    in: path
+    required: true
+    description: ID of the subscription to update
+    schema:
+      type: integer
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          subscription_start_date:
+            type: string
+            format: date
+            example: "2024-12-01"
+          subscription_end_date:
+            type: string
+            format: date
+            example: "2025-12-01"
+          subscription_duration_months:
+            type: integer
+            example: 12
+          km_driven_during_subscription:
+            type: number
+            format: float
+            example: 15000.5
+          contracted_km:
+            type: integer
+            example: 20000
+          monthly_subscription_price:
+            type: number
+            format: float
+            example: 299.99
+          delivery_location:
+            type: string
+            example: "Copenhagen"
+          has_delivery_insurance:
+            type: boolean
+            example: true
+responses:
+  201:
+    description: Subscription updated successfully
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: "Subscription updated successfully."
+  400:
+    description: Bad request
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Invalid request parameters"
+  404:
+    description: Subscription not found
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: "Subscription not found."
+  500:
+    description: Internal server error
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "An unexpected error occurred"

@@ -1,0 +1,53 @@
+# File: swagger/get_subscription_car_info.yaml
+tags:
+  - name: Subscriptions
+summary: Retrieve car information for a specific subscription by ID
+description: Retrieve car information related to a specific subscription by its ID
+parameters:
+  - name: id
+    in: path
+    required: true
+    description: ID of the subscription to retrieve car information
+    schema:
+      type: integer
+responses:
+  200:
+    description: Car information for the subscription
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            car_info:
+              type: string
+              example: "Car information goes here"
+  400:
+    description: Bad request
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Invalid request parameters"
+  404:
+    description: Subscription not found
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: "Subscription not found"
+  500:
+    description: Internal server error
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "An unexpected error occurred"

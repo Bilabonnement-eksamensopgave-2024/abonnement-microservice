@@ -1,0 +1,48 @@
+# File: swagger/get_current_subscriptions_total_price.yaml
+tags:
+  - name: Subscriptions
+summary: Retrieve the total price of current active subscriptions
+description: Retrieve the total price of all active subscriptions that are currently ongoing
+parameters: []
+responses:
+  200:
+    description: Total price of active subscriptions
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            total_price:
+              type: number
+              format: float
+              example: 599.98
+  400:
+    description: Bad request
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Invalid request parameters"
+  404:
+    description: No active subscriptions found
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: "Currently, there are no active subscriptions"
+  500:
+    description: Internal server error
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "An unexpected error occurred"
