@@ -190,6 +190,11 @@ def delete_subscription(id):
 
     return jsonify(result), status
 
+# ----------------------------------------------------- GET /health
+@app.route('/health', methods=['GET'])
+def health_check():
+    return jsonify({"status": "healthy"}), 200
+
 def _is_available(start_date, end_date):
     # Calculate is_available based on subscription dates 
     today = datetime.now().strftime('%Y-%m-%d') 
@@ -214,4 +219,4 @@ def _update_car_is_available(data):
 
     
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 80)))
