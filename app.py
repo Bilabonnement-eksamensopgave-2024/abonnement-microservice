@@ -83,12 +83,16 @@ def service_info():
     })
 
 # ----------------------------------------------------- GET /routes
-@app.route('/routes', methods=['GET']) 
-def routes(): 
-    return jsonify([ 
-        {"path": "/subscriptions", "methods": ["GET", "POST"]}, 
-        {"path": "/subscriptions/<id>", "methods": ["GET", "PATCH", "DELETE"]}
+@app.route('/routes', methods=['GET'])
+def routes():
+    return jsonify([
+        {"path": "/subscriptions", "methods": ["GET", "POST"]},
+        {"path": "/subscriptions/<id>", "methods": ["GET", "PATCH", "DELETE"]},
+        {"path": "/subscriptions/<id>/car", "methods": ["GET"]},
+        {"path": "/subscriptions/current", "methods": ["GET"]},
+        {"path": "/subscriptions/current/total-price", "methods": ["GET"]}
     ])
+
 # ----------------------------------------------------- GET /subscriptions                                                                                                                                  
 @app.route('/subscriptions', methods=['GET'])
 @swag_from('swagger/get_subscriptions.yaml')
