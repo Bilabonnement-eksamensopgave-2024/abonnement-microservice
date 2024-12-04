@@ -1,8 +1,11 @@
-import sqlite3
+from dotenv import load_dotenv
+import os
+import sqlitecloud
 from datetime import datetime
 import csv
 
-DB_NAME = "subscriptions.db"
+load_dotenv()
+DB_NAME = os.getenv("DB_NAME")
 TABLE_NAME = "subscriptions"
 
 def create_table(): 
@@ -68,7 +71,7 @@ def _add_csv_to_db():
         
 def add_subscription(data):
     try:
-        with sqlite3.connect(DB_NAME) as conn:
+        with sqlitecloud.connect(DB_NAME) as conn:
             cur = conn.cursor()
             
             cur.execute(
@@ -99,13 +102,13 @@ def add_subscription(data):
 
         return [201, {"message": "New subscription added to database"}]
 
-    except sqlite3.Error as e:
+    except sqlitecloud.Error as e:
         return [500, {"error": str(e)}]
     
 def get_subscriptions():
     try:
-        with sqlite3.connect(DB_NAME) as conn:
-            conn.row_factory = sqlite3.Row
+        with sqlitecloud.connect(DB_NAME) as conn:
+            conn.row_factory = sqlitecloud.Row
             cur = conn.cursor()
             
             cur.execute(f'SELECT * FROM {TABLE_NAME}')
@@ -116,13 +119,13 @@ def get_subscriptions():
                     
             return [200, [dict(row) for row in data]]
 
-    except sqlite3.Error as e:
+    except sqlitecloud.Error as e:
         return [500, {"error": str(e)}]
     
 def get_subscription_by_id(id):
     try:
-        with sqlite3.connect(DB_NAME) as conn:
-            conn.row_factory = sqlite3.Row
+        with sqlitecloud.connect(DB_NAME) as conn:
+            conn.row_factory = sqlitecloud.Row
             cur = conn.cursor()
             
             cur.execute(f'SELECT * FROM {TABLE_NAME} WHERE subscription_id = ?', (id,))
@@ -133,13 +136,13 @@ def get_subscription_by_id(id):
                     
             return [200, dict(data)]
 
-    except sqlite3.Error as e:
+    except sqlitecloud.Error as e:
         return [500, {"error": str(e)}]
 
 def get_active_subscriptions():
     try:
-        with sqlite3.connect(DB_NAME) as conn:
-            conn.row_factory = sqlite3.Row
+        with sqlitecloud.connect(DB_NAME) as conn:
+            conn.row_factory = sqlitecloud.Row
             cur = conn.cursor()
 
             # Get today's date in ISO format 
@@ -158,13 +161,13 @@ def get_active_subscriptions():
                     
             return [200, [dict(row) for row in data]]
 
-    except sqlite3.Error as e:
+    except sqlitecloud.Error as e:
         return [500, {"error": str(e)}]
 
 def get_active_subscriptions_total_price():
     try:
-        with sqlite3.connect(DB_NAME) as conn:
-            conn.row_factory = sqlite3.Row
+        with sqlitecloud.connect(DB_NAME) as conn:
+            conn.row_factory = sqlitecloud.Row
             cur = conn.cursor()
 
             # Get today's date in ISO format 
@@ -184,12 +187,12 @@ def get_active_subscriptions_total_price():
                     
             return [200, {"total_price": data}]
 
-    except sqlite3.Error as e:
+    except sqlitecloud.Error as e:
         return [500, {"error": str(e)}]
 
 def update_subscription(id, data):
     try:
-        with sqlite3.connect(DB_NAME) as conn:
+        with sqlitecloud.connect(DB_NAME) as conn:
             cur = conn.cursor()
             
             query = f'''
@@ -217,12 +220,12 @@ def update_subscription(id, data):
             
             return [201, {"message": "Subscription updated successfully."}]
 
-    except sqlite3.Error as e:
+    except sqlitecloud.Error as e:
         return [500, {"error": str(e)}]
 
 def delete_item_by_id(id):
     try:
-        with sqlite3.connect(DB_NAME) as conn:
+        with sqlitecloud.connect(DB_NAME) as conn:
             cur = conn.cursor()
 
             # Delete the row with the specified id
@@ -233,9 +236,5 @@ def delete_item_by_id(id):
             
             return [200, {"message": f"Subscription deleted from {TABLE_NAME} successfully."}]
 
-    except sqlite3.Error as e:
+    except sqlitecloud.Error as e:
         return [500, {"error": str(e)}]
-
-
-
-
