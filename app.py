@@ -1,10 +1,6 @@
 from flask import Flask, jsonify, request, make_response
 import requests
-import sqlite3
-import bcrypt
 import os
-import jwt
-from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from dotenv import load_dotenv
 from flasgger import swag_from
 import datetime
