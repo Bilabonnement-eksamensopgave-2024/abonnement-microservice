@@ -6,7 +6,7 @@ import os
 
 # Load environment variables from .env file
 load_dotenv()
-DB_PATH = os.getenv('DB_PATH')
+DB_PATH = os.getenv('DB_PATH', "subscriptions.db")
 TABLE_NAME = "subscriptions"
 
 def create_table(): 
