@@ -87,8 +87,8 @@ def service_info():
 def routes():
     return jsonify([
         {"path": "/subscriptions", "methods": ["GET", "POST"]},
-        {"path": "/subscriptions/<id>", "methods": ["GET", "PATCH", "DELETE"]},
-        {"path": "/subscriptions/<id>/car", "methods": ["GET"]},
+        {"path": "/subscriptions/<int:id>", "methods": ["GET", "PATCH", "DELETE"]},
+        {"path": "/subscriptions/<int:id>/car", "methods": ["GET"]},
         {"path": "/subscriptions/current", "methods": ["GET"]},
         {"path": "/subscriptions/current/total-price", "methods": ["GET"]}
     ])
@@ -97,7 +97,7 @@ def routes():
 @app.route('/subscriptions', methods=['GET'])
 @swag_from('swagger/get_subscriptions.yaml')
 #@role_required('user') # TODO UPDATE LATER
-def subscriptions_get():    
+def subscriptions_get():
     
     status, result = subscription.get_subscriptions()
 
