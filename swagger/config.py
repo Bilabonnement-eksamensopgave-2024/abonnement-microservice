@@ -1,4 +1,3 @@
-
 from flasgger import Swagger
 
 # Swagger configuration
@@ -20,16 +19,30 @@ swagger_config = {
 ##UPDATE##
 template = {
     "info": {
-        "title": "Abonnement microservice",
-        "description": "This microservice handles subscription-related operations such as adding, updating, deleting, and retrieving subscriptions.",
+        "title": "Subscription microservice",
+        "description": "This microservice handles car subscription-related operations such as adding, updating, deleting, and retrieving subscriptions.",
         "version": "1.0.0",
     },
     "securityDefinitions": {
-        "Bearer": {
+        "cookieAuth": {
             "type": "apiKey",
             "name": "Authorization",
-            "in": "header",
-            "description": "JWT Authorization header using the Bearer scheme. Example: \"Bearer {token}\""
+            "in": "cookie",
+            "description": "JWT Authorization cookie with required roles. Example: \"Authorization: Bearer {token}\""
+        }
+    },
+    "security": [
+        {
+            "cookieAuth": []
+        }
+    ],
+    "components": {
+        "securitySchemes": {
+            "cookieAuth": {
+                "type": "apiKey",
+                "name": "Authorization",
+                "in": "cookie"
+            }
         }
     }
 }

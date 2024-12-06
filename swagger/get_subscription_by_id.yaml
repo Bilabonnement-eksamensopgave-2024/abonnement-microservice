@@ -4,12 +4,18 @@ tags:
 summary: Retrieve a specific subscription by ID
 description: Retrieve a specific subscription by its ID from the database
 parameters:
-  - name: id
-    in: path
+  - in: path
+    name: id
     required: true
     description: ID of the subscription to retrieve
     schema:
       type: integer
+  - in: cookie
+    name: Authorization
+    required: true
+    schema:
+      type: string
+    description: JWT token with one of the required roles - ['admin']
 responses:
   200:
     description: A subscription object
@@ -82,3 +88,8 @@ responses:
             error:
               type: string
               example: "An unexpected error occurred"
+security:
+  - cookieAuth: []
+x-swagger-router-controller: get_users
+x-swagger-roles: 
+  - admin

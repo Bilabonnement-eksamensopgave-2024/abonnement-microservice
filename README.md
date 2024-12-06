@@ -17,7 +17,7 @@ This microservice provides endpoints to manage subscription-related operations. 
 ## API Endpoints
 
 ### GET /subscriptions
-- **Description**: Retrieve a list of subscriptions.
+- **Description**: Retrieve a list of subscriptions (admin role required).
 - **Example Request**:
     ```http
     GET /subscriptions
@@ -43,7 +43,7 @@ This microservice provides endpoints to manage subscription-related operations. 
 - **Response Codes**: `200`, `400`, `500`
 
 ### GET /subscriptions/{id}
-- **Description**: Retrieve a specific subscription by ID.
+- **Description**: Retrieve a specific subscription by ID (admin role required).
 - **Example Request**:
     ```http
     GET /subscriptions/1
@@ -66,7 +66,7 @@ This microservice provides endpoints to manage subscription-related operations. 
 - **Response Codes**: `200`, `400`, `404`, `500`
 
 ### GET /subscriptions/current
-- **Description**: Retrieve a list of current active subscriptions.
+- **Description**: Retrieve a list of current active subscriptions (admin role required).
 - **Example Request**:
     ```http
     GET /subscriptions/current
@@ -92,7 +92,7 @@ This microservice provides endpoints to manage subscription-related operations. 
 - **Response Codes**: `200`, `400`, `404`, `500`
 
 ### GET /subscriptions/current/total-price
-- **Description**: Retrieve the total price of current active subscriptions.
+- **Description**: Retrieve the total price of current active subscriptions (admin role required).
 - **Example Request**:
     ```http
     GET /subscriptions/current/total-price
@@ -106,7 +106,7 @@ This microservice provides endpoints to manage subscription-related operations. 
 - **Response Codes**: `200`, `400`, `404`, `500`
 
 ### GET /subscriptions/{id}/car
-- **Description**: Retrieve car information for a specific subscription by ID.
+- **Description**: Retrieve car information for a specific subscription by ID (admin role required).
 - **Example Request**:
     ```http
     GET /subscriptions/1/car
@@ -120,7 +120,7 @@ This microservice provides endpoints to manage subscription-related operations. 
 - **Response Codes**: `200`, `400`, `404`, `500`
 
 ### POST /subscriptions
-- **Description**: Add a new subscription.
+- **Description**: Add a new subscription (admin role required).
 - **Example Request**:
     ```http
     POST /subscriptions
@@ -147,7 +147,7 @@ This microservice provides endpoints to manage subscription-related operations. 
 - **Response Codes**: `201`, `400`, `500`
 
 ### PATCH /subscriptions/{id}
-- **Description**: Update an existing subscription.
+- **Description**: Update an existing subscription (admin role required).
 - **Example Request**:
     ```http
     PATCH /subscriptions/1
@@ -167,7 +167,7 @@ This microservice provides endpoints to manage subscription-related operations. 
 - **Response Codes**: `201`, `400`, `404`, `500`
 
 ### DELETE /subscriptions/{id}
-- **Description**: Delete a subscription by ID.
+- **Description**: Delete a subscription by ID (admin role required).
 - **Example Request**:
     ```http
     DELETE /subscriptions/1

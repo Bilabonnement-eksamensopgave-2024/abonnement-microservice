@@ -4,47 +4,61 @@ tags:
 summary: Update an existing subscription
 description: Update an existing subscription in the database
 parameters:
-  - name: id
-    in: path
+  - in: path
+    name: id
     required: true
     description: ID of the subscription to update
     schema:
       type: integer
-requestBody:
-  required: true
-  content:
-    application/json:
-      schema:
-        type: object
-        properties:
-          subscription_start_date:
-            type: string
-            format: date
-            example: "2024-12-01"
-          subscription_end_date:
-            type: string
-            format: date
-            example: "2025-12-01"
-          subscription_duration_months:
-            type: integer
-            example: 12
-          km_driven_during_subscription:
-            type: number
-            format: float
-            example: 15000.5
-          contracted_km:
-            type: integer
-            example: 20000
-          monthly_subscription_price:
-            type: number
-            format: float
-            example: 299.99
-          delivery_location:
-            type: string
-            example: "Copenhagen"
-          has_delivery_insurance:
-            type: boolean
-            example: true
+  - in: body
+    name: body
+    required: true
+    schema:
+      type: object
+      optional:
+        - subscription_start_date
+        - subscription_end_date
+        - subscription_duration_months
+        - km_driven_during_subscription
+        - contracted_km
+        - monthly_subscription_price
+        - delivery_location
+        - has_delivery_insurance
+      properties:
+        subscription_start_date:
+          type: string
+          format: date
+          example: "2024-12-01"
+        subscription_end_date:
+          type: string
+          format: date
+          example: "2025-12-01"
+        subscription_duration_months:
+          type: integer
+          example: 12
+        km_driven_during_subscription:
+          type: number
+          format: float
+          example: 15000.5
+        contracted_km:
+          type: integer
+          example: 20000
+        monthly_subscription_price:
+          type: number
+          format: float
+          example: 299.99
+        delivery_location:
+          type: string
+          example: "Copenhagen"
+        has_delivery_insurance:
+          type: boolean
+          example: true
+  - in: cookie
+    name: Authorization
+    required: true
+    schema:
+      type: string
+    description: JWT token with one of the required roles - ['admin']
 responses:
   201:
     description: Subscription updated successfully
@@ -86,3 +100,8 @@ responses:
             error:
               type: string
               example: "An unexpected error occurred"
+security:
+  - cookieAuth: []
+x-swagger-router-controller: get_users
+x-swagger-roles: 
+  - admin

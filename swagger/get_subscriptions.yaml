@@ -3,7 +3,13 @@ tags:
   - name: Subscriptions
 summary: Retrieve a list of subscriptions
 description: Retrieve a list of subscriptions from the database
-parameters: []
+parameters:
+  - in: cookie
+    name: Authorization
+    required: true
+    schema:
+      type: string
+    description: JWT token with one of the required roles - ['admin']
 responses:
   200:
     description: A list of subscriptions
@@ -68,3 +74,8 @@ responses:
             error:
               type: string
               example: "An unexpected error occurred"
+security:
+  - cookieAuth: []
+x-swagger-router-controller: get_users
+x-swagger-roles: 
+  - admin
