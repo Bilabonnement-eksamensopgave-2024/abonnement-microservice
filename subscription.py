@@ -202,25 +202,24 @@ def update_subscription(id, data):
             SET '''
 
             i = 0
+            values = []
             for key,value in data.items():
                 if key not in query:
                     if i > 0:
                         query+= ", "
 
-                    if isinstance(value, str):
-                        query += f'{key} = "{value}"'
-                    else:
-                        query += f'{key} = {value}'
+                    query += f'{key} = ?'
+                    values.append(value)
                     i += 1
 
-            query += f" WHERE subscription_id = {id}"
+            query += f" WHERE id = {id}"
             print(query)
 
-            cur.execute(query)
+            cur.execute(query, (values))
             if cur.rowcount == 0:
                 return [404, {"message": "Subscription not found."}]
             
-            return [201, {"message": "Subscription updated successfully."}]
+            return [200, {"message": "Subscription updated successfully."}]
 
     except sqlite3.Error as e:
         return [500, {"error": str(e)}]

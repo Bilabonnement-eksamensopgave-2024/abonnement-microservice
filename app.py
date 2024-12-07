@@ -15,12 +15,31 @@ app = Flask(__name__)
 
 # Configuration
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
-BASE_ADMIN_URL = ""
+ADMIN_EMAIL = os.getenv('ADMIN_EMAIL')
+ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD')
+ADMIN_GATEWAY_URL = os.getenv('ADMIN_GATEWAY_URL')
+
+session = requests.Session()
 
 # Initialize Swagger
 init_swagger(app)
 
 # ----------------------------------------------------- Private functions
+def _login():
+    if 'Authorization' not in session.cookies: 
+        url = f'{ADMIN_GATEWAY_URL}/login' 
+
+        response = session.post( 
+            url, 
+            json={"email": ADMIN_EMAIL, "password": ADMIN_PASSWORD}, 
+            headers={'Content-Type': 'application/json'} 
+            ) 
+        
+        if response.status_code == 200: 
+            return True
+        return False 
+    return True
+
 def _is_available(start_date, end_date):
     # Calculate is_available based on subscription dates 
     today = datetime.now().strftime('%Y-%m-%d') 
@@ -34,12 +53,14 @@ def _update_car_is_available(data):
     end_date = data.get("subscription_end_date")
     
     if car_id and start_date and end_date:
-        url = f'{BASE_ADMIN_URL}/cars/{car_id}'
-        payload = { "is_available": _is_available(start_date, end_date) } 
-        headers = { 'Content-Type': 'application/json' } # TODO add token
-        response = requests.patch(url, json=payload, headers=headers)
-    
-        return response.json(), response.status_code
+        if _login():
+            url = f'{ADMIN_GATEWAY_URL}/cars/{car_id}'
+            payload = { "is_available": _is_available(start_date, end_date) } 
+            headers = { 'Content-Type': 'application/json' }
+            response = session.patch(url, json=payload, headers=headers)
+            return response.json(), response.status_code
+        
+        return jsonify({"message": "Authentication failed"}), 401
     
     return {"message": "No car id, start date or end date found"}, 404
 
@@ -126,20 +147,22 @@ def get_subscription(id):
 @swag_from('swagger/get_subscription_car_info.yaml')
 @auth.role_required('admin') 
 def get_subscription_car_info(id):
-
     status, result = subscription.get_subscription_by_id(id)
 
-    '''if status == 200:
+    if status == 200:
         car_id = result.get("car_id")
         
         if car_id:
-            url = f'{BASE_ADMIN_URL}/cars/{car_id}'
-            headers = { 'Content-Type': 'application/json' } # TODO add token
-            response = requests.get(url, headers=headers)
+            if _login():
+                url = f'{ADMIN_GATEWAY_URL}/cars/{car_id}'
+                headers = { 'Content-Type': 'application/json' }
+                response = session.get(url, headers=headers)
+            
+                return response.json(), response.status_code
+            
+            return jsonify({"message": "Authentication failed"}), 401
         
-            return response.json(), response.status_code
-        
-        return jsonify({"message": "No car id found"}), 404'''
+        return jsonify({"message": "No car id found"}), 404
     
     return jsonify(result), status
 
@@ -166,18 +189,19 @@ def get_current_subscriptions_total_price():
 # ----------------------------------------------------- POST /subscriptions
 @app.route('/subscriptions', methods=['POST'])
 @swag_from('swagger/post_subscriptions.yaml')
-@auth.role_required('admin') 
+@auth.role_required('admin')
 def post_subscription():
     data = request.json
     
     status, result = subscription.add_subscription(data)
+    response_data = {"subscription": {"result": result, "status": status}}
 
-    # TODO update is_available under cars microservice
-    '''if status == 201:
+    if status == 201:
         car_update_status, car_update_result = _update_car_is_available(data)
-        return jsonify(car_update_result), car_update_status'''
+        response_data["car_update"] = {"result": car_update_result, "status": car_update_status}
+        return jsonify(response_data), car_update_status
 
-    return jsonify(result), status
+    return jsonify(response_data), status
 
 # ----------------------------------------------------- PATCH /subscriptions/id
 @app.route('/subscriptions/<int:id>', methods=['PATCH'])
@@ -187,16 +211,18 @@ def patch_subscription(id):
     data = request.json
     
     status, result = subscription.update_subscription(id, data)
+    response_data = {"subscription": {"result": result, "status": status}}
 
     # TODO if date is changed or duration then update is_available under cars microservice
-    '''if status == 201:
+    if status == 201:
         start = data.get('subscription_start_date')
         end = data.get('subscription_end_date')
         duration = data.get('subscription_duration_months', 3)
 
         if start and end or duration and end:
             car_update_status, car_update_result = _update_car_is_available(data)
-            return jsonify(car_update_result), car_update_status'''
+            response_data["car_update"] = {"result": car_update_result, "status": car_update_status}
+            return jsonify(response_data), car_update_status
 
     return jsonify(result), status
 
