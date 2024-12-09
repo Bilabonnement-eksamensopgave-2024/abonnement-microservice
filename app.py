@@ -19,23 +19,25 @@ ADMIN_EMAIL = os.getenv('ADMIN_EMAIL')
 ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD')
 ADMIN_GATEWAY_URL = os.getenv('ADMIN_GATEWAY_URL')
 
-session = requests.Session()
+cookies = None
 
 # Initialize Swagger
 init_swagger(app)
 
 # ----------------------------------------------------- Private functions
 def _login():
-    if 'Authorization' not in session.cookies: 
+    global cookies
+    if 'Authorization' not in cookies:
         url = f'{ADMIN_GATEWAY_URL}/login' 
 
-        response = session.post( 
+        response = requests.post( 
             url, 
             json={"email": ADMIN_EMAIL, "password": ADMIN_PASSWORD}, 
-            headers={'Content-Type': 'application/json'} 
+            headers={'Content-Type': 'application/json'},
             ) 
         
         if response.status_code == 200: 
+            cookies = response.cookies
             return True
         return False 
     return True
@@ -57,7 +59,7 @@ def _update_car_is_available(data):
             url = f'{ADMIN_GATEWAY_URL}/cars/{car_id}'
             payload = { "is_available": _is_available(start_date, end_date) } 
             headers = { 'Content-Type': 'application/json' }
-            response = session.patch(url, json=payload, headers=headers)
+            response = requests.patch(url, json=payload, headers=headers, cookies=cookies)
             return response.json(), response.status_code
         
         return jsonify({"message": "Authentication failed"}), 401
@@ -156,7 +158,7 @@ def get_subscription_car_info(id):
             if _login():
                 url = f'{ADMIN_GATEWAY_URL}/cars/{car_id}'
                 headers = { 'Content-Type': 'application/json' }
-                response = session.get(url, headers=headers)
+                response = requests.get(url, headers=headers, cookies=cookies)
             
                 return response.json(), response.status_code
             
