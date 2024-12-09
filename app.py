@@ -127,7 +127,7 @@ def service_info():
 # ----------------------------------------------------- GET /subscriptions                                                                                                                                  
 @app.route('/subscriptions', methods=['GET'])
 @swag_from('swagger/get_subscriptions.yaml')
-@auth.role_required('admin') 
+@auth.role_required('admin', 'finance') 
 def subscriptions_get():
     
     status, result = subscription.get_subscriptions()
@@ -181,7 +181,7 @@ def get_current_subscriptions():
 # ----------------------------------------------------- GET /subscriptions/current/total-price
 @app.route('/subscriptions/current/total-price', methods=['GET'])
 @swag_from('swagger/get_current_subscriptions_total_price.yaml')
-@auth.role_required('admin') 
+@auth.role_required('admin', 'finance') 
 def get_current_subscriptions_total_price():    
     
     status, result = subscription.get_active_subscriptions_total_price()

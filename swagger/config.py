@@ -28,7 +28,7 @@ template = {
             "type": "apiKey",
             "name": "Authorization",
             "in": "cookie",
-            "description": "JWT Authorization cookie with required roles. Example: \"Authorization: Bearer {token}\""
+            "description": "JWT Authorization cookie with required roles. Example: \"Authorization: {token}\""
         }
     },
     "security": [
