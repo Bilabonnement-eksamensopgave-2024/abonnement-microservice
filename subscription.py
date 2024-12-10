@@ -212,7 +212,7 @@ def update_subscription(id, data):
                     values.append(value)
                     i += 1
 
-            query += f" WHERE id = {id}"
+            query += f" WHERE subscription_id = {id}"
             print(query)
 
             cur.execute(query, (values))
