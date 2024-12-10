@@ -48,7 +48,9 @@ def _is_available(start_date, end_date):
         today = datetime.now().strftime('%Y-%m-%d') 
         start_date = datetime.strptime(start_date, '%Y-%m-%d') 
         end_date = datetime.strptime(end_date, '%Y-%m-%d') 
-        return [200, start_date <= datetime.strptime(today, '%Y-%m-%d') <= end_date]
+        is_available = not (start_date <= datetime.strptime(today, '%Y-%m-%d') <= end_date)
+        return [200, is_available]
+
     except Exception as e:
         return [500, {"error": str(e)}]
 
