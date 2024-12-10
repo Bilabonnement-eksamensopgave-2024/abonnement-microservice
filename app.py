@@ -3,7 +3,7 @@ import requests
 import os
 from dotenv import load_dotenv
 from flasgger import swag_from
-import datetime
+from datetime import datetime
 from swagger.config import init_swagger
 import subscription
 import auth
@@ -27,8 +27,8 @@ init_swagger(app)
 # ----------------------------------------------------- Private functions
 def _login():
     global cookies
-    if 'Authorization' not in cookies:
-        url = f'{ADMIN_GATEWAY_URL}/login' 
+    if cookies == None or 'Authorization' not in cookies:
+        url = f'{ADMIN_GATEWAY_URL}/user/login' 
 
         response = requests.post( 
             url, 
@@ -43,11 +43,14 @@ def _login():
     return True
 
 def _is_available(start_date, end_date):
-    # Calculate is_available based on subscription dates 
-    today = datetime.now().strftime('%Y-%m-%d') 
-    start_date = datetime.strptime(start_date, '%Y-%m-%d') 
-    end_date = datetime.strptime(end_date, '%Y-%m-%d') 
-    return start_date <= datetime.strptime(today, '%Y-%m-%d') <= end_date
+    try:
+        # Calculate is_available based on subscription dates 
+        today = datetime.now().strftime('%Y-%m-%d') 
+        start_date = datetime.strptime(start_date, '%Y-%m-%d') 
+        end_date = datetime.strptime(end_date, '%Y-%m-%d') 
+        return [200, start_date <= datetime.strptime(today, '%Y-%m-%d') <= end_date]
+    except Exception as e:
+        return [500, {"error": str(e)}]
 
 def _update_car_is_available(data):
     car_id = data.get("car_id")
@@ -55,14 +58,18 @@ def _update_car_is_available(data):
     end_date = data.get("subscription_end_date")
     
     if car_id and start_date and end_date:
-        if _login():
-            url = f'{ADMIN_GATEWAY_URL}/cars/{car_id}'
-            payload = { "is_available": _is_available(start_date, end_date) } 
-            headers = { 'Content-Type': 'application/json' }
-            response = requests.patch(url, json=payload, headers=headers, cookies=cookies)
-            return response.json(), response.status_code
+        is_available = _is_available(start_date, end_date)
+        if is_available[0] == 200:
+            if _login():
+                url = f'{ADMIN_GATEWAY_URL}/car/cars/{car_id}'
+                payload = { "is_available": is_available[1] } 
+                headers = { 'Content-Type': 'application/json' }
+                response = requests.patch(url, json=payload, headers=headers, cookies=cookies)
+                return response.json(), response.status_code
+            
+            return {"message": "Authentication failed"}, 401
         
-        return jsonify({"message": "Authentication failed"}), 401
+        return {"message": f"Could not calculate is_available: {is_available[1]}"}, 404
     
     return {"message": "No car id, start date or end date found"}, 404
 
@@ -147,7 +154,7 @@ def get_subscription(id):
 # ----------------------------------------------------- GET /subscriptions/id/car TODO
 @app.route('/subscriptions/<int:id>/car', methods=['GET'])
 @swag_from('swagger/get_subscription_car_info.yaml')
-@auth.role_required('admin') 
+#@auth.role_required('admin') 
 def get_subscription_car_info(id):
     status, result = subscription.get_subscription_by_id(id)
 
@@ -156,7 +163,7 @@ def get_subscription_car_info(id):
         
         if car_id:
             if _login():
-                url = f'{ADMIN_GATEWAY_URL}/cars/{car_id}'
+                url = f'{ADMIN_GATEWAY_URL}/car/cars/{car_id}'
                 headers = { 'Content-Type': 'application/json' }
                 response = requests.get(url, headers=headers, cookies=cookies)
             
@@ -191,7 +198,7 @@ def get_current_subscriptions_total_price():
 # ----------------------------------------------------- POST /subscriptions
 @app.route('/subscriptions', methods=['POST'])
 @swag_from('swagger/post_subscriptions.yaml')
-@auth.role_required('admin')
+#@auth.role_required('admin')
 def post_subscription():
     data = request.json
     
