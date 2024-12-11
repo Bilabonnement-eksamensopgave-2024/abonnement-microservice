@@ -6,10 +6,10 @@ description: Retrieve the total price of all active subscriptions that are curre
 parameters: 
   - in: cookie
     name: Authorization
-    required: true
+    required: false
     schema:
       type: string
-    description: JWT token with one of the required roles - ['admin']
+    description: JWT token with one of the required roles - ['admin', 'finance']
 responses:
   200:
     description: Total price of active subscriptions
@@ -54,6 +54,3 @@ responses:
               example: "An unexpected error occurred"
 security:
   - cookieAuth: []
-x-swagger-router-controller: get_users
-x-swagger-roles: 
-  - admin

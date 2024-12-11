@@ -6,7 +6,7 @@ description: Retrieve a list of active subscriptions that are currently ongoing
 parameters:
   - in: cookie
     name: Authorization
-    required: true
+    required: false
     schema:
       type: string
     description: JWT token with one of the required roles - ['admin']
@@ -86,6 +86,3 @@ responses:
               example: "An unexpected error occurred"
 security:
   - cookieAuth: []
-x-swagger-router-controller: get_users
-x-swagger-roles: 
-  - admin

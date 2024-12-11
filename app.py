@@ -86,13 +86,13 @@ def service_info():
                 "path": "/subscriptions",
                 "method": "GET",
                 "description": "Retrieve a list of subscriptions",
-                "role_required": "admin"
+                "role_required": "admin, finance, sales"
             },
             {
                 "path": "/subscriptions/<int:id>",
                 "method": "GET",
                 "description": "Retrieve a specific subscription by ID",
-                "role_required": "admin"
+                "role_required": "admin, sales"
             },
             {
                 "path": "/subscriptions/current",
@@ -104,31 +104,31 @@ def service_info():
                 "path": "/subscriptions/current/total-price",
                 "method": "GET",
                 "description": "Retrieve the total price of current active subscriptions",
-                "role_required": "admin"
+                "role_required": "admin, finance"
             },
             {
                 "path": "/subscriptions/<int:id>/car",
                 "method": "GET",
                 "description": "Retrieve car information for a specific subscription by ID",
-                "role_required": "admin"
+                "role_required": "admin, sales"
             },
             {
                 "path": "/subscriptions",
                 "method": "POST",
                 "description": "Add a new subscription",
-                "role_required": "admin"
+                "role_required": "admin, sales"
             },
             {
                 "path": "/subscriptions/<int:id>",
                 "method": "PATCH",
                 "description": "Update an existing subscription",
-                "role_required": "admin"
+                "role_required": "admin, sales"
             },
             {
                 "path": "/subscriptions/<int:id>",
                 "method": "DELETE",
                 "description": "Delete a subscription by ID",
-                "role_required": "admin"
+                "role_required": "admin, sales"
             }
         ]
     })
@@ -136,7 +136,7 @@ def service_info():
 # ----------------------------------------------------- GET /subscriptions                                                                                                                                  
 @app.route('/subscriptions', methods=['GET'])
 @swag_from('swagger/get_subscriptions.yaml')
-@auth.role_required('admin', 'finance') 
+@auth.role_required('admin', 'finance', 'sales') 
 def subscriptions_get():
     
     status, result = subscription.get_subscriptions()
@@ -146,17 +146,17 @@ def subscriptions_get():
 # ----------------------------------------------------- GET /subscriptions/id
 @app.route('/subscriptions/<int:id>', methods=['GET'])
 @swag_from('swagger/get_subscription_by_id.yaml')
-@auth.role_required('admin')
+@auth.role_required('admin', 'sales')
 def get_subscription(id):    
     
     status, result = subscription.get_subscription_by_id(id)
 
     return jsonify(result), status
 
-# ----------------------------------------------------- GET /subscriptions/id/car TODO
+# ----------------------------------------------------- GET /subscriptions/id/car
 @app.route('/subscriptions/<int:id>/car', methods=['GET'])
 @swag_from('swagger/get_subscription_car_info.yaml')
-#@auth.role_required('admin') 
+@auth.role_required('admin', 'sales') 
 def get_subscription_car_info(id):
     status, result = subscription.get_subscription_by_id(id)
 
@@ -180,8 +180,8 @@ def get_subscription_car_info(id):
 # ----------------------------------------------------- GET /subscriptions/current
 @app.route('/subscriptions/current', methods=['GET'])
 @swag_from('swagger/get_current_subscriptions.yaml')
-@auth.role_required('admin') 
-def get_current_subscriptions():    
+@auth.role_required('admin')
+def get_current_subscriptions():
     
     status, result = subscription.get_active_subscriptions()
 
@@ -191,7 +191,7 @@ def get_current_subscriptions():
 @app.route('/subscriptions/current/total-price', methods=['GET'])
 @swag_from('swagger/get_current_subscriptions_total_price.yaml')
 @auth.role_required('admin', 'finance') 
-def get_current_subscriptions_total_price():    
+def get_current_subscriptions_total_price():
     
     status, result = subscription.get_active_subscriptions_total_price()
 
@@ -200,7 +200,7 @@ def get_current_subscriptions_total_price():
 # ----------------------------------------------------- POST /subscriptions
 @app.route('/subscriptions', methods=['POST'])
 @swag_from('swagger/post_subscriptions.yaml')
-#@auth.role_required('admin')
+@auth.role_required('admin', 'sales')
 def post_subscription():
     data = request.json
     
@@ -217,14 +217,13 @@ def post_subscription():
 # ----------------------------------------------------- PATCH /subscriptions/id
 @app.route('/subscriptions/<int:id>', methods=['PATCH'])
 @swag_from('swagger/patch_subscription.yaml')
-@auth.role_required('admin') 
+@auth.role_required('admin', 'sales') 
 def patch_subscription(id):    
     data = request.json
     
     status, result = subscription.update_subscription(id, data)
     response_data = {"subscription": {"result": result, "status": status}}
 
-    # TODO if date is changed or duration then update is_available under cars microservice
     if status == 201:
         start = data.get('subscription_start_date')
         end = data.get('subscription_end_date')
@@ -240,7 +239,7 @@ def patch_subscription(id):
 # ----------------------------------------------------- DELETE /subscriptions/id
 @app.route('/subscriptions/<int:id>', methods=['DELETE'])
 @swag_from('swagger/delete_subscription.yaml')
-@auth.role_required('admin') 
+@auth.role_required('admin', 'sales') 
 def delete_subscription(id):        
     status, result = subscription.delete_item_by_id(id)
 

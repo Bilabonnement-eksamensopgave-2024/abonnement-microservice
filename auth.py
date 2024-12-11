@@ -28,18 +28,29 @@ def decode_token(token):
     except jwt.InvalidTokenError:
         return 'Invalid token. Please log in again.'
 
+
 def role_required(*roles):
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
+            # Check for token in cookies
             token = request.cookies.get('Authorization')
             if not token:
-                return jsonify({'message': 'Token is missing! You do not have permission to access this endpoint!'}), 401
+                # Check for token in headers if not found in cookies
+                token = request.headers.get('Authorization')
+                if not token:
+                    return jsonify({'message': 'Token is missing! You do not have permission to access this endpoint!'}), 401
 
             try:
+                # Decode the token
                 payload = decode_token(token)
+                # Check for required roles
                 if not any(role in payload['roles'] for role in roles):
                     return jsonify({'message': 'You do not have permission to access this endpoint!'}), 403
+            except jwt.ExpiredSignatureError as e:
+                return jsonify({'message': str(e)}), 401
+            except jwt.InvalidTokenError as e:
+                return jsonify({'message': str(e)}), 401
             except Exception as e:
                 return jsonify({'message': str(e)}), 401
 

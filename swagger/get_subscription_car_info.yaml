@@ -12,10 +12,10 @@ parameters:
       type: integer
   - in: cookie
     name: Authorization
-    required: true
+    required: false
     schema:
       type: string
-    description: JWT token with one of the required roles - ['admin']
+    description: JWT token with one of the required roles - ['admin', 'sales']
 responses:
   200:
     description: Car information for the subscription
@@ -59,6 +59,3 @@ responses:
               example: "An unexpected error occurred"
 security:
   - cookieAuth: []
-x-swagger-router-controller: get_users
-x-swagger-roles: 
-  - admin
