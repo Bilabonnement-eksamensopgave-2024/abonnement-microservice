@@ -29,7 +29,7 @@ This microservice is part of a larger application, interacting with other servic
 ## JWT
 This service uses JSON Web Tokens (JWT) for authentication and role-based access control.
 
-## Domain Model Snippet - todo mermaid
+## Domain Model Snippet
 ```mermaid
 classDiagram
     class Subscription {
