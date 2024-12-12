@@ -17,8 +17,6 @@
 ## Overview
 The Car Subscription Microservice manages subscriptions related to car rentals. It handles CRUD operations for subscriptions, integrates with other services to retrieve car information, and calculates total subscription prices. This service plays a crucial role in managing user subscriptions within the overall car rental application.
 
-### Domain Model - todo
-
 ### Microservice Architecture
 This microservice is part of a larger application, interacting with other services (e.g., car microservice) to provide a seamless user experience.
 
@@ -31,10 +29,22 @@ This microservice is part of a larger application, interacting with other servic
 ## JWT
 This service uses JSON Web Tokens (JWT) for authentication and role-based access control.
 
-## Architecture diagram - todo
-
-## Database Structure - todo
-
+## Domain Model Snippet - todo mermaid
+```mermaid
+classDiagram
+    class Subscription {
+        int subscription_id
+        int car_id
+        string subscription_start_date
+        string subscription_end_date
+        int subscription_duration_months = 3
+        int km_driven_during_subscription
+        int contracted_km
+        int monthly_subscription_price
+        string delivery_location
+        bool has_delivery_insurance = false
+    }
+```
 
 ## Technology Stack
 - **Programming Language**: Python
