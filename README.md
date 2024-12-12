@@ -43,6 +43,15 @@ classDiagram
         int monthly_subscription_price
         string delivery_location
         bool has_delivery_insurance = false
+        subscriptions_get()
+        get_subscription(id)
+        get_subscription_car_info(id)
+        get_current_subscriptions()
+        get_current_subscriptions_total_price()
+        post_subscription(data)
+        patch_subscription(id, data)
+        delete_subscription(id)
+        health_check()
     }
 ```
 
