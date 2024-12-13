@@ -2,11 +2,10 @@
 
 ## Table of Contents
 1. [Overview](#overview)
-   - [Domain Model](#domain-model)
    - [Microservice Architecture](#microservice-architecture)
 2. [Features](#features)
 3. [JWT](#jwt)
-4. [Database Structure (ERD)](#database-structure-erd)
+4. [Domain Model Snippet](#domain-model-snippet)
 5. [Technology Stack](#technology-stack)
 6. [Environment Variables](#environment-variables)
 7. [Endpoints](#endpoints)
