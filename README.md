@@ -43,14 +43,14 @@ classDiagram
         string delivery_location
         bool has_delivery_insurance = false
         subscriptions_get()
-        get_subscription(id)
-        get_subscription_car_info(id)
-        get_current_subscriptions()
-        get_current_subscriptions_total_price()
-        post_subscription(data)
-        patch_subscription(id, data)
-        delete_subscription(id)
-        health_check()
+        get_subscription(id) : List
+        get_subscription_by_id(id) : Dict
+        get_active_subscriptions() : List
+        get_active_subscriptions_total_price() : Int
+        add_subscription(data : Any): String
+        update_subscription(id, data) : String
+        delete_item_by_id(id) : String
+        health_check() : String
     }
 ```
 
